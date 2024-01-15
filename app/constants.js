@@ -19,7 +19,9 @@ const defaultHeaderParams = {
 }
 const dnsQuestionBuffer = createDnsSection({
     section: 'question',
-    domain_name: DOMAIN_NAME
+    domain_name: DOMAIN_NAME,
+    type: 1,
+    class: 1,
 });
 
 const dnsAnswerBuffer = createDnsSection({
