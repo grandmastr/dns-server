@@ -1,0 +1,12 @@
+const HEADER_SIZE = 12
+const QUESTION_SIZE = 4
+const ANSWER_SIZE = 10
+const RESOURCE_SIZE = 10
+const TTL_SIZE = 4
+
+module.exports = {
+    HEADER: HEADER_SIZE,
+    QUESTION: QUESTION_SIZE,
+    ANSWER: ANSWER_SIZE,
+    RESOURCE: RESOURCE_SIZE,
+}
