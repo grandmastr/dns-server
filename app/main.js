@@ -2,7 +2,7 @@ const dgram = require("dgram");
 const {createDnsSection} = require("./utils/dnsSection");
 
 const udpSocket = dgram.createSocket("udp4");
-udpSocket.bind(2054, "127.0.0.1");
+udpSocket.bind(2053, "127.0.0.1");
 
 const dnsQuery = Buffer.from([
     0x00, 0x00, // [0-1] Transaction ID
