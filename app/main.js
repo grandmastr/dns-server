@@ -1,44 +1,29 @@
 const dgram = require("dgram");
-const {createDnsSection} = require("./utils/dnsSections");
+
+const {dnsHeaderBuffer, dnsQuestionBuffer, dnsAnswerBuffer} = require("./constants");
+const {parseDnsHeader, createDnsSection} = require("./utils/dnsSections");
 
 const udpSocket = dgram.createSocket("udp4");
 udpSocket.bind(2053, "127.0.0.1");
 
+
 udpSocket.on("message", (buf, rinfo) => {
     try {
-        console.log('--)(--');
-        console.log('grandmastr.dev');
-        console.log('--)(--');
+        const parsedHeaderOptions = parseDnsHeader(buf);
+
+        let _headerOptions = {
+            ...parsedHeaderOptions,
+            id: parsedHeaderOptions.id,
+            qr: 1,
+            opcode: parsedHeaderOptions.opcode,
+            rd: parsedHeaderOptions.rd,
+            rcode: parsedHeaderOptions.opcode === 0 ? 0 : 4,
+        }
+
+        console.log(_headerOptions);
         const dnsHeaderBuffer = createDnsSection({
             section: 'header',
-            id: buf.readUInt16BE(0),
-            qr: 1,
-            opcode: 0,
-            aa: 0,
-            tc: 0,
-            rd: 1,
-            ra: 1,
-            z: 0,
-            rcode: 0,
-            qdcount: 1,
-            ancount: 1,
-            nscount: 0,
-            arcount: 0
-        });
-
-        const dnsQuestionBuffer = createDnsSection({
-            section: 'question',
-            domain_name: 'codecrafters.io'
-        });
-
-        const dnsAnswerBuffer = createDnsSection({
-            section: 'answer',
-            domain_name: 'codecrafters.io',
-            type: 1,
-            class: 1,
-            ttl: 60,
-            length: 4,
-            data: "8.8.8.8"
+            ..._headerOptions
         });
 
         const response = Buffer.concat([dnsHeaderBuffer, dnsQuestionBuffer, dnsAnswerBuffer]);

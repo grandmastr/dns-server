@@ -58,8 +58,8 @@ function createDnsQuestion(options) {
     const questionBuffer = Buffer.alloc(domainBuffer.length + 4);
     domainBuffer.copy(questionBuffer);
 
-    questionBuffer.writeUInt16BE(1, domainBuffer.length); // Type
-    questionBuffer.writeUInt16BE(1, domainBuffer.length + 2); // Class
+    questionBuffer.writeUInt16BE(options.type, domainBuffer.length); // Type
+    questionBuffer.writeUInt16BE(options.class, domainBuffer.length + 2); // Class
 
     return questionBuffer;
 }
@@ -78,6 +78,44 @@ function createDnsAnswer(options) {
     answerBuffer.writeUInt16BE(options.data, offset + 2);
 
     return answerBuffer;
+}
+
+function parseDnsHeader(buffer) {
+    const headerBuffer = buffer.subarray(0, 12);
+
+    const id = headerBuffer.readUInt16BE(0);
+
+    const flags = headerBuffer.readUInt16BE(2);
+
+    const qr = (flags >> 15) & 0b1;
+    const opcode = (flags >> 11) & 0b1111;
+    const aa = (flags >> 10) & 0b1;
+    const tc = (flags >> 9) & 0b1;
+    const rd = (flags >> 8) & 0b1;
+    const ra = (flags >> 7) & 0b1;
+    const z = (flags >> 4) & 0b111;
+    const rcode = flags & 0b1111;
+
+    const qdcount = headerBuffer.readUInt16BE(4);
+    const ancount = headerBuffer.readUInt16BE(6);
+    const nscount = headerBuffer.readUInt16BE(8);
+    const arcount = headerBuffer.readUInt16BE(10);
+
+    return {
+        id,
+        qr,
+        opcode,
+        aa,
+        tc,
+        rd,
+        ra,
+        z,
+        rcode,
+        qdcount,
+        ancount,
+        nscount,
+        arcount
+    }
 }
 
 
@@ -131,5 +169,5 @@ class DnsSections {
 
 module.exports = {
     createDnsSection,
-    // DnsHeader: DnsSections,
+    parseDnsHeader,
 };
