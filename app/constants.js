@@ -3,7 +3,7 @@ const {createDnsSection} = require("./utils/dnsSections");
 const DOMAIN_NAME = 'codecrafters.io';
 
 const defaultHeaderParams = {
-    id: buf.readUInt16BE(0),
+    id: 1,
     qr: 1,
     opcode: 0,
     aa: 0,
