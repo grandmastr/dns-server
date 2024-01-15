@@ -1,13 +1,14 @@
 const SIZES = require('../constants');
+const encodeDomainName = require('./encodeDomainName');
 
 /**
  * This file contains the functions that are used to create the DNS sections,
  * including header, question, answer, authority, and additional information/
  * @param {Object} options - the options that are used to create the DNS section
- * @returns {Buffer} - the buffer that contains the DNS section
+ * @returns buffer {Buffer} - the buffer that contains the DNS section
  * */
 function createDnsSection(options) {
-    let bugger;
+    let buffer;
 
     switch (options.section) {
         case 'header':
@@ -15,6 +16,9 @@ function createDnsSection(options) {
 
             createDnsHeader(options, buffer);
             return buffer;
+
+        case 'question':
+            return createDnsQuestion(options);
     }
 }
 
@@ -45,8 +49,20 @@ function createDnsHeader(options, buffer) {
     return buffer;
 }
 
+function createDnsQuestion(options) {
+    const domainBuffer = encodeDomainName(options.domain_name);
 
-class DnsSection {
+    const questionBuffer = Buffer.alloc(domainBuffer.length + 4);
+    domainBuffer.copy(questionBuffer);
+
+    questionBuffer.writeUInt16BE(1, domainBuffer.length); // Type
+    questionBuffer.writeUInt16BE(1, domainBuffer.length + 2); // Class
+
+    return questionBuffer;
+}
+
+
+class DnsSections {
     constructor(buffer) {
         if (buffer) {
             this.id = buffer.readUInt16BE(0);
@@ -96,5 +112,5 @@ class DnsSection {
 
 module.exports = {
     createDnsSection,
-    // DnsHeader: DnsSection,
+    // DnsHeader: DnsSections,
 };

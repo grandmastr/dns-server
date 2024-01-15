@@ -1,5 +1,5 @@
 const dgram = require("dgram");
-const {createDnsSection} = require("./utils/dnsSection");
+const {createDnsSection} = require("./utils/dnsSections");
 
 const udpSocket = dgram.createSocket("udp4");
 udpSocket.bind(2053, "127.0.0.1");
@@ -31,7 +31,9 @@ const dnsQuery = Buffer.from([
 
 udpSocket.on("message", (buf, rinfo) => {
     try {
-        console.log(`Received ${buf.length} bytes from ${rinfo.address}:${rinfo.port}`);
+        console.log('--)(--');
+        console.log(buf.toString());
+        console.log('--)(--');
         const dnsHeaderBuffer = createDnsSection({
             section: 'header',
             id: buf.readUInt16BE(0),
@@ -43,15 +45,19 @@ udpSocket.on("message", (buf, rinfo) => {
             ra: 1,
             z: 0,
             rcode: 0,
-            qdcount: buf.readUInt16BE(4),
-            ancount: 0,
+            qdcount: 1,
+            ancount: 1,
             nscount: 0,
             arcount: 0
-        })
+        });
 
-        console.log(dnsHeaderBuffer, 'dns header buffer');
+        const dnsQuestionBuffer = createDnsSection({
+            section: 'question',
+            domain_name: 'codecrafters.io'
+        });
 
-        const response = Buffer.concat([dnsHeaderBuffer]);
+        const response = Buffer.concat([dnsHeaderBuffer, dnsQuestionBuffer]);
+
         udpSocket.send(response, rinfo.port, rinfo.address);
     } catch (e) {
         console.log(`Error receiving data: ${e}`);
