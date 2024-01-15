@@ -28,12 +28,12 @@ udpSocket.on("message", (buf, rinfo) => {
 
         const dnsQuestionBuffer = createDnsSection({
             section: 'question',
-            domain_name: 'grandmastr.dev'
+            domain_name: 'codecrafters.io'
         });
 
         const dnsAnswerBuffer = createDnsSection({
             section: 'answer',
-            domain_name: 'grandmastr.dev',
+            domain_name: 'codecrafters.io',
             type: 1,
             class: 1,
             ttl: 60,
