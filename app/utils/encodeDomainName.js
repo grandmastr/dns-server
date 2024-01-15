@@ -2,7 +2,7 @@
  * Say you have a url like google.com, this function encodes the domain name
  * into a DNS server compatible format
  * @param domain {string} - URL
- * @returns buffer {Buffer} = encoded URL as a Buffer
+ * @returns Buffer {Buffer} = encoded URL as a Buffer
  * */
 
 function encodeDomainName(domain) {

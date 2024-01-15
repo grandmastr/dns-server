@@ -5,7 +5,7 @@ const encodeDomainName = require('./encodeDomainName');
  * This file contains the functions that are used to create the DNS sections,
  * including header, question, answer, authority, and additional information/
  * @param {Object} options - the options that are used to create the DNS section
- * @returns buffer {Buffer} - the buffer that contains the DNS section
+ * @returns Buffer {Buffer} - the buffer that contains the DNS section
  * */
 function createDnsSection(options) {
     let buffer;
@@ -19,6 +19,9 @@ function createDnsSection(options) {
 
         case 'question':
             return createDnsQuestion(options);
+
+        case 'answer':
+            return createDnsAnswer(options);
     }
 }
 
@@ -59,6 +62,22 @@ function createDnsQuestion(options) {
     questionBuffer.writeUInt16BE(1, domainBuffer.length + 2); // Class
 
     return questionBuffer;
+}
+
+function createDnsAnswer(options) {
+    const domainBuffer = encodeDomainName(options.domain_name);
+
+    const answerBuffer = Buffer.alloc(domainBuffer.length + 14); // this is as a result of +2 for type,+2 for class, +4 for TTL, +2 for data length, and +4 for the IP address
+    domainBuffer.copy(answerBuffer);
+
+    let offset = domainBuffer.length;
+    buffer.writeUInt16BE(options.type, offset);
+    buffer.writeUInt16BE(options.class, offset + 2);
+    buffer.writeUInt16BE(options.ttl, offset + 2);
+    buffer.writeUInt16BE(options.length, offset + 4);
+    buffer.writeUInt16BE(options.data, offset + 2);
+
+    return answerBuffer;
 }
 
 
