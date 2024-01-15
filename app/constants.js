@@ -34,7 +34,6 @@ const dnsAnswerBuffer = createDnsSection({
 
 module.exports = {
     HEADER: 12,
-    dnsHeaderBuffer,
     dnsQuestionBuffer,
     dnsAnswerBuffer,
     defaultHeaderParams,
