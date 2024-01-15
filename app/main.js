@@ -39,5 +39,5 @@ udpSocket.on("error", (err) => {
 
 udpSocket.on("listening", () => {
     const address = udpSocket.address();
-    console.log(`Server listening ${address.address}:${address.port}`);
+    console.log(`Server listening ${address.address}:${address.port}`)
 });
