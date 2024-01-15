@@ -8,12 +8,12 @@ const SIZES = require('../constants');
  * */
 function createDnsSection(options) {
     let bugger;
-    if (typeof size === 'number')
-        buffer = Buffer.alloc(SIZES['HEADER']);
 
     switch (options.section) {
         case 'header':
-            createDnsHeader(options, SIZES['HEADER']);
+            buffer = Buffer.alloc(SIZES['HEADER']);
+
+            createDnsHeader(options, buffer);
             return buffer;
     }
 }
@@ -96,5 +96,5 @@ class DnsSection {
 
 module.exports = {
     createDnsSection,
-    DnsHeader: DnsSection,
+    // DnsHeader: DnsSection,
 };
