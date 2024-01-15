@@ -20,20 +20,20 @@ const dnsQuery = Buffer.from([
     0x00, 0x01  // Class IN (Internet)
 ]);
 
-udpSocket.send(dnsQuery, 2053, "127.0.0.1", (error) => {
-    if (error) {
-        console.error('Error:', error)
-        client.close();
-    } else {
-        console.log('DNS query sent', dnsQuery);
-    }
-})
+// udpSocket.send(dnsQuery, 2053, "127.0.0.1", (error) => {
+//     if (error) {
+//         console.error('Error:', error)
+//         client.close();
+//     } else {
+//         console.log('DNS query sent', dnsQuery);
+//     }
+// })
 
 udpSocket.on("message", (buf, rinfo) => {
     try {
         console.log(`Received ${buf.length} bytes from ${rinfo.address}:${rinfo.port}`);
         const dnsHeaderBuffer = createDnsSection({
-            section: 'HEADER',
+            section: 'header',
             id: buf.readUInt16BE(0),
             qr: 1,
             opcode: 0,
