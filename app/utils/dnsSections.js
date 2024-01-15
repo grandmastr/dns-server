@@ -71,11 +71,11 @@ function createDnsAnswer(options) {
     domainBuffer.copy(answerBuffer);
 
     let offset = domainBuffer.length;
-    buffer.writeUInt16BE(options.type, offset);
-    buffer.writeUInt16BE(options.class, offset + 2);
-    buffer.writeUInt16BE(options.ttl, offset + 2);
-    buffer.writeUInt16BE(options.length, offset + 4);
-    buffer.writeUInt16BE(options.data, offset + 2);
+    answerBuffer.writeUInt16BE(options.type, offset);
+    answerBuffer.writeUInt16BE(options.class, offset + 2);
+    answerBuffer.writeUInt16BE(options.ttl, offset + 2);
+    answerBuffer.writeUInt16BE(options.length, offset + 4);
+    answerBuffer.writeUInt16BE(options.data, offset + 2);
 
     return answerBuffer;
 }
