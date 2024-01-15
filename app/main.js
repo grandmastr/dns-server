@@ -47,6 +47,7 @@ udpSocket.on("message", (buf, rinfo) => {
             ...parsedHeaderOptions,
             id: parsedHeaderOptions.id,
             qr: 1,
+            ancount: 1,
             opcode: parsedHeaderOptions.opcode,
             rd: parsedHeaderOptions.rd,
             rcode: parsedHeaderOptions.opcode === 0 ? 0 : 4,
