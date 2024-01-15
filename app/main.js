@@ -1,7 +1,7 @@
 const dgram = require("dgram");
 
-const {dnsHeaderBuffer, dnsQuestionBuffer, dnsAnswerBuffer} = require("./constants");
-const {parseDnsHeader, createDnsSection} = require("./utils/dnsSections");
+const {DOMAIN_NAME} = require("./constants");
+const {parseDnsHeader, createDnsSection} = require("./utils/dnsSections")
 
 const udpSocket = dgram.createSocket("udp4");
 udpSocket.bind(2053, "127.0.0.1");
@@ -10,8 +10,6 @@ udpSocket.bind(2053, "127.0.0.1");
 udpSocket.on("message", (buf, rinfo) => {
     try {
         const parsedHeaderOptions = parseDnsHeader(buf);
-
-        const DOMAIN_NAME = 'codecrafters.io';
 
         const defaultHeaderParams = {
             id: 1,
@@ -45,7 +43,7 @@ udpSocket.on("message", (buf, rinfo) => {
             data: "8.8.8.8"
         });
 
-        let _headerOptions = {
+        const _headerOptions = {
             ...parsedHeaderOptions,
             id: parsedHeaderOptions.id,
             qr: 1,
@@ -54,7 +52,6 @@ udpSocket.on("message", (buf, rinfo) => {
             rcode: parsedHeaderOptions.opcode === 0 ? 0 : 4,
         }
 
-        console.log(_headerOptions);
         const dnsHeaderBuffer = createDnsSection({
             section: 'header',
             ..._headerOptions
