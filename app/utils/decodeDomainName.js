@@ -124,7 +124,6 @@ function getAnswerBuffer(encodedDomainBuffers, ip, qdcount = 1) {
         const answerBuffer = Buffer.alloc(encodedDomainBuffer.length + 14); // create a buffer for the answer
 
         encodedDomainBuffer.copy(answerBuffer);
-        console.log('getAnswerBuffer offset >>>>');
 
         let offset = encodedDomainBuffer.length;
         answerBuffer.writeUInt16BE(recordTypes.A, offset); // write the type into the answer buffer
@@ -174,7 +173,7 @@ function getFlags(options) {
 function parseFlags(flags) {
     return {
         qr: (flags >> 15),
-        opcode:  1,
+        opcode: (flags >> 11) & 0b1111,
         aa: (flags >> 10) & 1,
         tc: (flags >> 9) & 1,
         rd: (flags >> 8) & 1,
