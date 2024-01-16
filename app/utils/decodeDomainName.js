@@ -193,7 +193,7 @@ function getEncodedDomainsFromBufferRequest(buffer, qdcount = 1) {
             // check for the pointer reference
             if ((labelLength & 0xc0) === 0xc0) {
                 const pointerOffset = buffer.readUint16BE(currentOffset) & 0x3fff; // 0x3ff = 0011 1111 1111 1111
-                const pointerBytes = getDomainBytesByPointer(buffer, pointerOffset);
+                const pointerBytes = getDomainBytesFromPointer(buffer, pointerOffset);
                 domainBytes.push(...pointerBytes);
                 // Create a buffer from the accumulated domain name bytes array
                 const domainBuffer = Buffer.from(domainBytes);
