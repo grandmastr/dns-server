@@ -12,8 +12,8 @@ function decodeDomainName(buffer, start = 0) {
         const length = buffer[offset++];
         const labels = buffer.slice(offset, offset + length).toString();
 
-        domain += `${labels}`;
-        offset += length;
+        domain += `${labels}.`;
+        offset += length - 1;
     }
 
     console.log('blaqi where you go');
