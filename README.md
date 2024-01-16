@@ -1,4 +1,4 @@
-# Node.js DNS
+# A Node.js DNS
 
 ## Introduction
 
