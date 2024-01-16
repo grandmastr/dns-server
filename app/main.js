@@ -19,7 +19,6 @@ udpSocket.on("message", (buf, rinfo) => {
             id: buf.readUInt16BE(0),
             ...parsedFlags,
             qr: 1,
-            opcode: 0,
             aa: 0,
             tc: 0,
             rd: 1,
