@@ -10,8 +10,6 @@ function decodeDomainName(buffer, start = 0) {
     let domain = [];
     let offset = start;
 
-    console.llog('for each label');
-
     while (buffer[offset] !== 0) {
         const length = buffer[offset++];
         const labels = buffer.slice(offset, offset + length).toString();
@@ -184,54 +182,40 @@ function parseFlags(flags) {
 
 function getEncodedDomainsFromBufferRequest(buffer, qdcount = 1) {
     const domainBufferArray = [];
-    console.log('getencodeddomainsfrombufferrequest');
-
-    let currentOffset = 12; // the first 12 bytes are for the header
+    let currentOffset = 12; // Assuming the domain name starts after the header (12 bytes)
     for (let i = 0; i < qdcount; i++) {
-        const domainBytes = []; // this is the array that will contain the bytes for the domain name
-
-        while(true) {
-            const labelLength = buffer.readUInt8(currentOffset++);
-
-            if ((labelLength & 0xC0) === 0xC0) {
-                const pointerOffset = buffer.readUInt16BE(currentOffset) & 0x3FFF;
+        const domainBytes = []; // Array to accumulate domain name bytes
+        while (true) {
+            const labelLength = buffer.readUInt8(currentOffset);
+            // check for the pointer reference
+            if ((labelLength & 0xc0) === 0xc0) {
+                const pointerOffset = buffer.readUint16BE(currentOffset) & 0x3fff; // 0x3ff = 0011 1111 1111 1111
                 const pointerBytes = getDomainBytesFromPointer(buffer, pointerOffset);
                 domainBytes.push(...pointerBytes);
-
+                // Create a buffer from the accumulated domain name bytes array
                 const domainBuffer = Buffer.from(domainBytes);
-
-                domainBufferArray.push(domainBuffer) // push the domain buffer into the array
+                domainBufferArray.push(domainBuffer);
                 break;
             }
-
+            // Check for the end of the domain name (null byte)
             if (labelLength === 0) {
-                // this means that the domain name has ended
-                domainBytes.push(0);
-                console.log(currentOffset);
+                domainBytes.push(0); // Push the null terminator
                 currentOffset++;
-                console.log(currentOffset, '>>>>>>>>')
-
                 break;
             }
-
-            domainBytes.push(labelLength); // push the label length into the array
-
+            domainBytes.push(labelLength); // Push label length
+            // Push label characters
             for (let j = 0; j < labelLength; j++) {
-                console.log('trying to add to domain bytes++++++', currentOffset);
-                if (currentOffset <= 32) {
-                    domainBytes.push(buffer.readUInt8(currentOffset + 1 + j)); // push the label into the array
-                }
+                domainBytes.push(buffer.readUInt8(currentOffset + 1 + j));
             }
-
-            currentOffset += labelLength + 1 // increment the current offset by the label length + 1;
-            console.log(currentOffset, '<<<<<<<')
+            // Move to the next label
+            currentOffset += labelLength + 1;
         }
-
+        // Create a buffer from the accumulated domain name bytes array
         const domainBuffer = Buffer.from(domainBytes);
-
-        domainBufferArray.push(domainBuffer) // push the domain buffer into the array
+        console.log(domainBytes);
+        domainBufferArray.push(domainBuffer);
     }
-
     return domainBufferArray;
 }
 
