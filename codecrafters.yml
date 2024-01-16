@@ -2,7 +2,6 @@
 #
 # These can be VERY verbose, so we suggest turning them off
 # unless you really need them.
-#debug: false
 debug: false
 
 # Use this to change the JavaScript version used to run your code
