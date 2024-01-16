@@ -61,7 +61,6 @@ function getDomainBytes(buffer, offset = 0) {
 }
 
 function getDomainBytesFromPointer(buffer, offset) {
-    console.log('getDomainBytesFromPointer');
     const domainBytes = [];
     let currentOffset = offset; // the current offset is the offset of the pointer
     console.log('getdomainbytespointer', currentOffset);
@@ -123,6 +122,7 @@ function getAnswerBuffer(encodedDomainBuffers, ip, qdcount = 1) {
         const answerBuffer = Buffer.alloc(encodedDomainBuffer.length + 14); // create a buffer for the answer
 
         encodedDomainBuffer.copy(answerBuffer);
+        console.log('getAnswerBuffer offset >>>>');
 
         let offset = encodedDomainBuffer.length;
         answerBuffer.writeUInt16BE(recordTypes.A, offset); // write the type into the answer buffer
@@ -173,17 +173,18 @@ function parseFlags(flags) {
     return {
         qr: (flags >> 15),
         opcode: (flags >> 11) & 0b1111,
-        aa: (flags >> 10) & 0b1,
-        tc: (flags >> 9) & 0b1,
-        rd: (flags >> 8) & 0b1,
-        ra: (flags >> 7) & 0b1,
+        aa: (flags >> 10) & 1,
+        tc: (flags >> 9) & 1,
+        rd: (flags >> 8) & 1,
+        ra: (flags >> 7) & 1,
         z: (flags >> 4) & 0b111,
         rcode: flags & 0b1111
     };
 }
 
-function getEncodedDomainsFromBufferRequest(buffer, qdcount) {
+function getEncodedDomainsFromBufferRequest(buffer, qdcount = 1) {
     const domainBufferArray = [];
+    console.log('getencodeddomainsfrombufferrequest');
 
     let currentOffset = 12; // the first 12 bytes are for the header
     for (let i = 0; i < qdcount; i++) {
