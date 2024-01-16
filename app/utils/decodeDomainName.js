@@ -33,7 +33,7 @@ function getDomainBytes(buffer, offset = 0) {
         const labelLength = buffer.readUInt8(currentOffset); // read the label length
 
         if ((labelLength & 0xC0) === 0xC0) {
-            const pointerBytes = getDomainBytesByPointer(buffer, currentOffset); // check if the label is a pointer
+            const pointerBytes = getDomainBytesFromPointer(buffer, currentOffset); // check if the label is a pointer
             domainBytes.push(...pointerBytes); // push the pointer bytes into the array
             currentOffset += 2;
 
@@ -60,8 +60,8 @@ function getDomainBytes(buffer, offset = 0) {
     return domainBytes;
 }
 
-function getDomainBytesByPointer(buffer, offset) {
-    console.log('getdomainbytesbypointer');
+function getDomainBytesFromPointer(buffer, offset) {
+    console.log('getDomainBytesFromPointer');
     const domainBytes = [];
     let currentOffset = offset; // the current offset is the offset of the pointer
     console.log('getdomainbytespointer', currentOffset);
@@ -70,7 +70,7 @@ function getDomainBytesByPointer(buffer, offset) {
         const labelLength = buffer.readUInt8(currentOffset); // read the label length
 
         if ((labelLength & 0xC0) === 0xC0) {
-            const pointerBytes = getDomainBytesByPointer(buffer, currentOffset); // check if the label is a pointer
+            const pointerBytes = getDomainBytesFromPointer(buffer, currentOffset); // check if the label is a pointer
             domainBytes.push(...pointerBytes); // push the pointer bytes into the array
             currentOffset += 2;
 
