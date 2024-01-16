@@ -186,7 +186,7 @@ function getEncodedDomainsFromBufferRequest(buffer, qdcount = 1) {
     const domainBufferArray = [];
     console.log('getencodeddomainsfrombufferrequest');
 
-    let currentOffset = 12; // the first 12 bytes are for the header
+    let currentOffset = 11; // the first 12 bytes are for the header
     for (let i = 0; i < qdcount; i++) {
         const domainBytes = []; // this is the array that will contain the bytes for the domain name
 
