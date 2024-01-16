@@ -1,6 +1,6 @@
 const SIZES = require('../constants');
 const encodeDomainName = require('./encodeDomainName');
-const decodeDomainName = require('./decodeDomainName');
+const {decodeDomainName} = require('./decodeDomainName');
 
 /**
  * This file contains the functions that are used to create the DNS sections,
