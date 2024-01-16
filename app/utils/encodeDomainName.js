@@ -13,6 +13,7 @@ function encodeDomainName(domain) {
 
     labels.forEach(label => {
         buffer.writeUInt8(label.length, offset++);
+        console.llog('for each label');
         buffer.write(label, offset);
         offset += label.length;
     });

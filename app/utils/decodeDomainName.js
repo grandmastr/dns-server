@@ -10,6 +10,8 @@ function decodeDomainName(buffer, start = 0) {
     let domain = [];
     let offset = start;
 
+    console.llog('for each label');
+
     while (buffer[offset] !== 0) {
         const length = buffer[offset++];
         const labels = buffer.slice(offset, offset + length).toString();
@@ -24,6 +26,8 @@ function decodeDomainName(buffer, start = 0) {
 function getDomainBytes(buffer, offset = 0) {
     let domainBytes = [];
     let currentOffset = offset;
+
+    console.llog('for each label');
 
     while (true) {
         const labelLength = buffer.readUInt8(currentOffset); // read the label length
