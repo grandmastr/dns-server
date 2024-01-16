@@ -12,11 +12,13 @@ function decodeDomainName(buffer, start = 0) {
         const length = buffer[offset++];
         const labels = buffer.slice(offset, offset + length).toString();
 
-        if (offset < 32) {
-            domain += `${labels}.`;
-            offset += length;
-        }
+        domain += `${labels}`;
+        offset += length;
     }
+
+    console.log('blaqi where you go');
+    console.log(domain);
+    console.log('nyem ego');
 
     return domain;
 }
