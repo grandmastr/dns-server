@@ -207,7 +207,9 @@ function getEncodedDomainsFromBufferRequest(buffer, qdcount = 1) {
             if (labelLength === 0) {
                 // this means that the domain name has ended
                 domainBytes.push(0);
+                console.log(currentOffset);
                 currentOffset++;
+                console.log(currentOffset, '>>>>>>>>')
 
                 break;
             }
@@ -219,6 +221,7 @@ function getEncodedDomainsFromBufferRequest(buffer, qdcount = 1) {
             }
 
             currentOffset += labelLength + 1 // increment the current offset by the label length + 1;
+            console.log(currentOffset, '<<<<<<<')
         }
 
         const domainBuffer = Buffer.from(domainBytes);
