@@ -19,7 +19,7 @@ udpSocket.on("message", (buf, rinfo) => {
             id: buf.readUint16BE(0),
             ...parsedFlags,
             qdcount: buf.readUint16BE(4),
-            ancount: 1, // sending same count as qdcount
+            ancount: 2, // sending same count as qdcount
             nscount: 0,
             arcount: 0,
             qr: 1,
