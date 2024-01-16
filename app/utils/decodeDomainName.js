@@ -27,7 +27,7 @@ function getDomainBytes(buffer, offset = 0) {
     let domainBytes = [];
     let currentOffset = offset;
 
-    console.llog('for each label');
+    console.log('for each label');
 
     while (true) {
         const labelLength = buffer.readUInt8(currentOffset); // read the label length
@@ -64,6 +64,7 @@ function getDomainBytesByPointer(buffer, offset) {
     console.log('getdomainbytesbypointer');
     const domainBytes = [];
     let currentOffset = offset; // the current offset is the offset of the pointer
+    console.log('getdomainbytespointer', currentOffset);
 
     while (true) {
         const labelLength = buffer.readUInt8(currentOffset); // read the label length
