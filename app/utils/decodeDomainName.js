@@ -118,21 +118,24 @@ function getQuestionByEncodedDomainBuffers(encodedDomainBuffers, qdcount = 1) {
 
 function getAnswerBuffer(encodedDomainBuffers, ip, qdcount = 1) {
     const answerBuffers = [];
-    for (let c = 0; c < qdcount; c++) {
-        const encodedDomainBuffer = encodedDomainBuffers[c];
-        const answerBuffer = Buffer.alloc(encodedDomainBuffer.length + 10 + 4); // deals only with IPv4 addresses (as +4 added for data / RDATA)
+
+    for (let k = 0; k < qdcount; k++) {
+        const encodedDomainBuffer = encodedDomainBuffers[k]; // get the encoded domain buffer
+        const answerBuffer = Buffer.alloc(encodedDomainBuffer.length + 14); // create a buffer for the answer
+
         encodedDomainBuffer.copy(answerBuffer);
+
         let offset = encodedDomainBuffer.length;
-        answerBuffer.writeUInt16BE(recordTypes.A, offset);
+        answerBuffer.writeUInt16BE(recordTypes.A, offset); // write the type into the answer buffer
         offset += 2;
-        answerBuffer.writeUInt16BE(classFields.IN, offset);
+        answerBuffer.writeUInt16BE(classFields.IN, offset); // write the class into the answer buffer
         offset += 4;
-        answerBuffer.writeUint32BE(60, offset); // ttl 60 seconds
+        answerBuffer.writeUInt32BE(60, offset); // write the ttl into the answer buffer
         offset += 2;
-        answerBuffer.writeUInt16BE(4, offset); // RDLENGTH 4 bytes
+        answerBuffer.writeUInt16BE(4, offset); // write the length into the answer buffer
         offset += 2;
         const rdata = Buffer.from([8, 8, 8, 8]).toString();
-        answerBuffer.writeUInt16BE(rdata, offset);
+        answerBuffer.writeUInt16BE(rdata, offset); // write the rdata into the answer buffer
         answerBuffers.push(answerBuffer);
     }
 

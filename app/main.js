@@ -19,7 +19,7 @@ udpSocket.on("message", (buf, rinfo) => {
             id: buf.readUint16BE(0),
             ...parsedFlags,
             qdcount: buf.readUint16BE(4),
-            ancount: buf.readUint16BE(4), // sending same count as qdcount
+            ancount: buf.readUint16BE(6), // sending same count as qdcount
             nscount: 0,
             arcount: 0,
             qr: 1,
@@ -36,7 +36,7 @@ udpSocket.on("message", (buf, rinfo) => {
         const questionBuffers = getQuestionByEncodedDomainBuffers(encodedDomainBuffers, encodedDomainBuffers.length);
         const answerBuffers = getAnswerBuffer(encodedDomainBuffers, questionBuffers.length);
         console.log(answerBuffers);
-        console.log('--- answer buffer ---');
+        console.log('--- answer buffers ---');
 
         // const response = Buffer.concat([dnsHeaderBuffer, dnsQuestionBuffer, dnsAnswerBuffer]);
         const response = Buffer.concat([headerBuffer, ...questionBuffers, ...answerBuffers]);
