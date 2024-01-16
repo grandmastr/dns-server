@@ -2,6 +2,7 @@ const dgram = require("dgram");
 
 const {DOMAIN_NAME} = require("./constants");
 const {parseDnsHeader, createDnsSection, parseDnsQuestions} = require("./utils/dnsSections")
+const {parseFlags, resolveCall, getEncodedDomainsFromBufferRequest, getQuestionByEncodedDomainBuffers, getAnswerBuffer} = require("./utils/decodeDomainName");
 
 const udpSocket = dgram.createSocket("udp4");
 udpSocket.bind(2053, "127.0.0.1");
@@ -11,6 +12,26 @@ udpSocket.on("message", (buf, rinfo) => {
     try {
         const parsedHeaderOptions = parseDnsHeader(buf);
         const parsedQuestionOptions = parseDnsQuestions(buf);
+
+        const flags = buf.readUInt16BE(2);
+        const parsedFlags = parseFlags(flags);
+
+        const options = {
+            id: buf.readUInt16BE(0),
+            ...parsedFlags,
+            qr: 1,
+            opcode: 0,
+            aa: 0,
+            tc: 0,
+            rd: 1,
+            ra: 1,
+            z: 0,
+            rcode: parsedFlags.opcode === 0 ? 0 : 4,
+            qdcount: buf.readUInt16BE(4),
+            ancount: buf.readUInt16BE(4),
+            nscount: 0,
+            arcount: 0
+        }
 
         const defaultHeaderParams = {
             id: 1,
@@ -59,7 +80,14 @@ udpSocket.on("message", (buf, rinfo) => {
             ..._headerOptions
         });
 
-        const response = Buffer.concat([dnsHeaderBuffer, dnsQuestionBuffer, dnsAnswerBuffer]);
+        const headerBuffer = resolveCall(options);
+
+        const encodedDomainBuffers = getEncodedDomainsFromBufferRequest(buf, options.qdcount);
+        const questionBuffers = getQuestionByEncodedDomainBuffers(encodedDomainBuffers, options.qdcount);
+        const answerBuffers = getAnswerBuffer(encodedDomainBuffers, questionBuffers.length);
+
+        // const response = Buffer.concat([dnsHeaderBuffer, dnsQuestionBuffer, dnsAnswerBuffer]);
+        const response = Buffer.concat([headerBuffer, ...questionBuffers, ...answerBuffers]);
 
         udpSocket.send(response, rinfo.port, rinfo.address);
     } catch (e) {

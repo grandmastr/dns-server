@@ -130,56 +130,8 @@ function parseDnsQuestions(buffer) {
     }
 }
 
-class DnsSections {
-    constructor(buffer) {
-        if (buffer) {
-            this.id = buffer.readUInt16BE(0);
-
-            const flags = buffer.readUInt16BE(2);
-
-            this.qr = (flags >> 15) & 0x1;
-            this.opcode = (flags >> 11) & 0xf;
-            this.aa = (flags >> 10) & 0x1;
-            this.tc = (flags >> 9) & 0x1;
-            this.rd = (flags >> 8) & 0x1;
-            this.ra = (flags >> 7) & 0x1;
-            this.z = (flags >> 4) & 0x7;
-            this.rcode = flags & 0xf;
-            this.qdcount = buffer.readUInt16BE(4);
-            this.ancount = buffer.readUInt16BE(6);
-            this.nscount = buffer.readUInt16BE(8);
-            this.arcount = buffer.readUInt16BE(10);
-        }
-    }
-
-    toBuffer() {
-        const buffer = Buffer.alloc(SIZES['HEADER']);
-        buffer.writeUInt16BE(this.id, 0);
-
-        let flags = 0;
-
-        flags |= this.qr << 15;
-        flags |= this.opcode << 11;
-        flags |= this.aa << 10;
-        flags |= this.tc << 9;
-        flags |= this.rd << 8;
-        flags |= this.ra << 7;
-        flags |= this.z << 4;
-        flags |= this.rcode;
-
-        buffer.writeUInt16BE(flags, 2);
-
-        buffer.writeUInt16BE(this.qdcount, 4);
-        buffer.writeUInt16BE(this.ancount, 6);
-        buffer.writeUInt16BE(this.nscount, 8);
-        buffer.writeUInt16BE(this.arcount, 10);
-
-        return buffer;
-    }
-}
-
 module.exports = {
     createDnsSection,
     parseDnsHeader,
-    parseDnsQuestions
+    parseDnsQuestions,
 };
