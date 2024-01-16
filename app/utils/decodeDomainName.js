@@ -97,7 +97,7 @@ function getDomainBytesFromPointer(buffer, offset) {
 function getQuestionByEncodedDomainBuffers(encodedDomainBuffers, qdcount = 1) {
     const questionBuffers = [];
 
-    for (const c = 0; c < qdcount; c++) {
+    for (let c = 0; c < qdcount; c++) {
         const encodedDomainBuffer = encodedDomainBuffers[c];
         const questionBuffer = Buffer.alloc(encodedDomainBuffer.length + 2 + 2);
         encodedDomainBuffer.copy(questionBuffer);
