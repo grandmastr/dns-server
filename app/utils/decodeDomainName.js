@@ -97,22 +97,16 @@ function getDomainBytesFromPointer(buffer, offset) {
 function getQuestionByEncodedDomainBuffers(encodedDomainBuffers, qdcount = 1) {
     const questionBuffers = [];
 
-    for (let k = 0; k < qdcount; k++) {
-        const encodedDomainBuffer = encodedDomainBuffers[k]; // get the encoded domain buffer
-
-        const questionBuffer = Buffer.alloc(encodedDomainBuffer.length + 4); // create a buffer for the question
-
-        encodedDomainBuffer.copy(questionBuffer); // copy the encoded domain buffer into the question buffer
-
+    for (const c = 0; c < qdcount; c++) {
+        const encodedDomainBuffer = encodedDomainBuffers[c];
+        const questionBuffer = Buffer.alloc(encodedDomainBuffer.length + 2 + 2);
+        encodedDomainBuffer.copy(questionBuffer);
         const typeOffset = encodedDomainBuffer.length;
         const classOffset = typeOffset + 2;
-
-        questionBuffer.writeUInt16BE(1, typeOffset); // write the type into the question buffer
-        questionBuffer.writeUInt16BE(1, classOffset); // write the class into the question buffer
-
+        questionBuffer.writeUInt16BE(1, typeOffset);
+        questionBuffer.writeUInt16BE(1, classOffset);
         questionBuffers.push(questionBuffer);
     }
-
     return questionBuffers;
 }
 
