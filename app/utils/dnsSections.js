@@ -120,6 +120,7 @@ function parseDnsHeader(buffer) {
 }
 
 function parseDnsQuestions(buffer) {
+    console.log('parseDnsQuestions');
     const offset = 12;
     const domainName = decodeDomainName(buffer, offset);
     const type = buffer.readUInt16BE(offset + domainName.length + 2);

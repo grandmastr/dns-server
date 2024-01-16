@@ -57,6 +57,7 @@ function getDomainBytes(buffer, offset = 0) {
 }
 
 function getDomainBytesByPointer(buffer, offset) {
+    console.log('getdomainbytesbypointer');
     const domainBytes = [];
     let currentOffset = offset; // the current offset is the offset of the pointer
 
