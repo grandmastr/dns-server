@@ -97,39 +97,42 @@ function getDomainBytesFromPointer(buffer, offset) {
 function getQuestionByEncodedDomainBuffers(encodedDomainBuffers, qdcount = 1) {
     const questionBuffers = [];
 
-    for (let c = 0; c < qdcount; c++) {
-        const encodedDomainBuffer = encodedDomainBuffers[c];
-        const questionBuffer = Buffer.alloc(encodedDomainBuffer.length + 2 + 2);
-        encodedDomainBuffer.copy(questionBuffer);
+    for (let k = 0; k < qdcount; k++) {
+        const encodedDomainBuffer = encodedDomainBuffers[k]; // get the encoded domain buffer
+
+        const questionBuffer = Buffer.alloc(encodedDomainBuffer.length + 4); // create a buffer for the question
+
+        encodedDomainBuffer.copy(questionBuffer); // copy the encoded domain buffer into the question buffer
+
         const typeOffset = encodedDomainBuffer.length;
         const classOffset = typeOffset + 2;
-        questionBuffer.writeUInt16BE(1, typeOffset);
-        questionBuffer.writeUInt16BE(1, classOffset);
+
+        questionBuffer.writeUInt16BE(1, typeOffset); // write the type into the question buffer
+        questionBuffer.writeUInt16BE(1, classOffset); // write the class into the question buffer
+
         questionBuffers.push(questionBuffer);
     }
+
     return questionBuffers;
 }
 
 function getAnswerBuffer(encodedDomainBuffers, ip, qdcount = 1) {
     const answerBuffers = [];
-
-    for (let k = 0; k < qdcount; k++) {
-        const encodedDomainBuffer = encodedDomainBuffers[k]; // get the encoded domain buffer
-        const answerBuffer = Buffer.alloc(encodedDomainBuffer.length + 14); // create a buffer for the answer
-
+    for (let c = 0; c < qdcount; c++) {
+        const encodedDomainBuffer = encodedDomainBuffers[c];
+        const answerBuffer = Buffer.alloc(encodedDomainBuffer.length + 10 + 4); // deals only with IPv4 addresses (as +4 added for data / RDATA)
         encodedDomainBuffer.copy(answerBuffer);
-
         let offset = encodedDomainBuffer.length;
-        answerBuffer.writeUInt16BE(recordTypes.A, offset); // write the type into the answer buffer
+        answerBuffer.writeUInt16BE(recordTypes.A, offset);
         offset += 2;
-        answerBuffer.writeUInt16BE(classFields.IN, offset); // write the class into the answer buffer
+        answerBuffer.writeUInt16BE(classFields.IN, offset);
         offset += 4;
-        answerBuffer.writeUInt32BE(60, offset); // write the ttl into the answer buffer
+        answerBuffer.writeUint32BE(60, offset); // ttl 60 seconds
         offset += 2;
-        answerBuffer.writeUInt16BE(4, offset); // write the length into the answer buffer
+        answerBuffer.writeUInt16BE(4, offset); // RDLENGTH 4 bytes
         offset += 2;
         const rdata = Buffer.from([8, 8, 8, 8]).toString();
-        answerBuffer.writeUInt16BE(rdata, offset); // write the rdata into the answer buffer
+        answerBuffer.writeUInt16BE(rdata, offset);
         answerBuffers.push(answerBuffer);
     }
 
