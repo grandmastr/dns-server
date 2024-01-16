@@ -29,13 +29,16 @@ udpSocket.on("message", (buf, rinfo) => {
             z: 0,
             rcode: parsedFlags.opcode === 0 ? 0 : 4,
         }
+
+        const responseIp = '203.0.113.1'; // Replace with the actual IP address you want to return
+
         console.log(options, 'options >>>>>>>>><<<<<<<<');
 
         const headerBuffer = resolveCall(options);
 
         const encodedDomainBuffers = getEncodedDomainsFromBufferRequest(buf, options.qdcount);
         const questionBuffers = getQuestionByEncodedDomainBuffers(encodedDomainBuffers, encodedDomainBuffers.length);
-        const answerBuffers = getAnswerBuffer(encodedDomainBuffers, questionBuffers.length);
+        const answerBuffers = getAnswerBuffer(encodedDomainBuffers, responseIp ,questionBuffers.length);
         console.log(answerBuffers);
         console.log('--- answer buffers ---');
 
