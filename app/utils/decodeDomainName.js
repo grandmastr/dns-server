@@ -218,8 +218,7 @@ function getEncodedDomainsFromBufferRequest(buffer, qdcount = 1) {
 
             for (let j = 0; j < labelLength - 1; j++) {
                 console.log('trying to add to domain bytes++++++', currentOffset);
-                break
-                // domainBytes.push(buffer.readUInt8(currentOffset + 1 + j)); // push the label into the array
+                domainBytes.push(buffer.readUInt8(currentOffset + 1 + j)); // push the label into the array
             }
 
             currentOffset += labelLength + 1 // increment the current offset by the label length + 1;
