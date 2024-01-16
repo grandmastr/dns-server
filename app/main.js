@@ -35,11 +35,11 @@ udpSocket.on("message", (buf, rinfo) => {
         const encodedDomainBuffers = getEncodedDomainsFromBufferRequest(buf, options.qdcount);
         const questionBuffers = getQuestionByEncodedDomainBuffers(encodedDomainBuffers, encodedDomainBuffers.length);
         const answerBuffers = getAnswerBuffer(encodedDomainBuffers, questionBuffers.length);
+        console.log(answerBuffers);
+        console.log('--- answer buffer ---');
 
         // const response = Buffer.concat([dnsHeaderBuffer, dnsQuestionBuffer, dnsAnswerBuffer]);
         const response = Buffer.concat([headerBuffer, ...questionBuffers, ...answerBuffers]);
-        console.log(response);
-        console.log('--- response ---');
 
         udpSocket.send(response, rinfo.port, rinfo.address);
     } catch (e) {
