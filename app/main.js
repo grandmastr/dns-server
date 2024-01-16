@@ -19,7 +19,7 @@ udpSocket.on("message", (buf, rinfo) => {
             id: buf.readUint16BE(0),
             ...parsedFlags,
             qdcount: buf.readUint16BE(4),
-            ancount: 2, // sending same count as qdcount
+            ancount: buf.readUInt16BE(4),
             nscount: 0,
             arcount: 0,
             qr: 1,
@@ -29,6 +29,7 @@ udpSocket.on("message", (buf, rinfo) => {
             z: 0,
             rcode: parsedFlags.opcode === 0 ? 0 : 4,
         }
+        console.log(options, 'options >>>>>>>>><<<<<<<<');
 
         const headerBuffer = resolveCall(options);
 
