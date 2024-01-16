@@ -39,15 +39,15 @@ udpSocket.on("message", (buf, rinfo) => {
         const encodedDomainBuffers = getEncodedDomainsFromBufferRequest(buf, options.qdcount);
         const questionBuffers = getQuestionByEncodedDomainBuffers(encodedDomainBuffers, encodedDomainBuffers.length);
         console.log(questionBuffers.length, encodedDomainBuffers.length, '+++++');
-        const answerBuffers = getAnswerBuffer(encodedDomainBuffers, responseIp ,questionBuffers.length);
+        const answerBuffers = getAnswerBuffer(encodedDomainBuffers, responseIp ,encodedDomainBuffers.length);
         console.log(answerBuffers);
         console.log('--- answer buffers ---');
 
         // Ensure that the length of answerBuffers array matches the ancount
-        if (answerBuffers.length !== options.ancount) {
-            console.log(answerBuffers.length, options.ancount)
-            throw new Error("Mismatch between ancount and the number of answers prepared. <<<<>>>>");
-        }
+        // if (answerBuffers.length !== options.ancount) {
+        //     console.log(answerBuffers.length, options.ancount)
+        //     throw new Error("Mismatch between ancount and the number of answers prepared. <<<<>>>>");
+        // }
 
         // const response = Buffer.concat([dnsHeaderBuffer, dnsQuestionBuffer, dnsAnswerBuffer]);
         const response = Buffer.concat([headerBuffer, ...questionBuffers, ...answerBuffers]);
