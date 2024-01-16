@@ -1,8 +1,8 @@
-# Node.js DNS Server
+# Node.js DNS
 
 ## Introduction
 
-This is a simple DNS server written in Node.js. It is intended to be used as a local DNS server for your network. It is
+This is a simple DNS written in Node.js. It is intended to be used as a local DNS server for your network. It is
 not a full DNS server, but it is capable of resolving a few basic DNS queries (A, AAAA, CNAME, PTR, TXT, and MX). It is
 also capable of forwarding queries to another DNS server (such as your ISP's DNS server). It is not intended to be used
 as a public DNS server.
