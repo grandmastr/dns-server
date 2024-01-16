@@ -30,19 +30,6 @@ udpSocket.on("message", (buf, rinfo) => {
             rcode: parsedFlags.opcode === 0 ? 0 : 4,
         }
 
-        const _headerOptions = {
-            ...parsedHeaderOptions,
-            id: parsedHeaderOptions.id,
-            qr: 1,
-            ancount: 1,
-            opcode: parsedHeaderOptions.opcode,
-            rd: parsedHeaderOptions.rd,
-            rcode: parsedHeaderOptions.opcode === 0 ? 0 : 4,
-        }
-        createDnsSection({
-            section: 'header',
-            ..._headerOptions
-        });
         const headerBuffer = resolveCall(options);
 
         const encodedDomainBuffers = getEncodedDomainsFromBufferRequest(buf, options.qdcount);
@@ -51,6 +38,8 @@ udpSocket.on("message", (buf, rinfo) => {
 
         // const response = Buffer.concat([dnsHeaderBuffer, dnsQuestionBuffer, dnsAnswerBuffer]);
         const response = Buffer.concat([headerBuffer, ...questionBuffers, ...answerBuffers]);
+        console.log(response);
+        console.log('--- response ---');
 
         udpSocket.send(response, rinfo.port, rinfo.address);
     } catch (e) {
