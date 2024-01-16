@@ -19,7 +19,7 @@ udpSocket.on("message", (buf, rinfo) => {
             id: buf.readUint16BE(0),
             ...parsedFlags,
             qdcount: buf.readUint16BE(4),
-            ancount: 2,
+            ancount: buf.readUInt16BE(4),
             nscount: 0,
             arcount: 0,
             qr: 1,
@@ -30,24 +30,13 @@ udpSocket.on("message", (buf, rinfo) => {
             rcode: parsedFlags.opcode === 0 ? 0 : 4,
         }
 
-        const responseIp = '203.0.113.1'; // Replace with the actual IP address you want to return
-
-        console.log(options, 'options >>>>>>>>><<<<<<<<');
-
         const headerBuffer = resolveCall(options);
 
         const encodedDomainBuffers = getEncodedDomainsFromBufferRequest(buf, options.qdcount);
         const questionBuffers = getQuestionByEncodedDomainBuffers(encodedDomainBuffers, encodedDomainBuffers.length);
-        console.log(questionBuffers.length, encodedDomainBuffers.length, '+++++');
-        const answerBuffers = getAnswerBuffer(encodedDomainBuffers, responseIp ,encodedDomainBuffers.length);
+        const answerBuffers = getAnswerBuffer(encodedDomainBuffers, questionBuffers.length);
         console.log(answerBuffers);
         console.log('--- answer buffers ---');
-
-        // Ensure that the length of answerBuffers array matches the ancount
-        // if (answerBuffers.length !== options.ancount) {
-        //     console.log(answerBuffers.length, options.ancount)
-        //     throw new Error("Mismatch between ancount and the number of answers prepared. <<<<>>>>");
-        // }
 
         // const response = Buffer.concat([dnsHeaderBuffer, dnsQuestionBuffer, dnsAnswerBuffer]);
         const response = Buffer.concat([headerBuffer, ...questionBuffers, ...answerBuffers]);
