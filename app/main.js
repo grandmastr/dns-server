@@ -16,19 +16,18 @@ udpSocket.on("message", (buf, rinfo) => {
         const parsedFlags = parseFlags(flags);
 
         const options = {
-            id: buf.readUInt16BE(0),
+            id: buf.readUint16BE(0),
             ...parsedFlags,
+            qdcount: buf.readUint16BE(4),
+            ancount: buf.readUint16BE(4), // sending same count as qdcount
+            nscount: 0,
+            arcount: 0,
             qr: 1,
             aa: 0,
             tc: 0,
-            rd: 1,
-            ra: 1,
+            ra: 0,
             z: 0,
             rcode: parsedFlags.opcode === 0 ? 0 : 4,
-            qdcount: buf.readUInt16BE(4),
-            ancount: buf.readUInt16BE(4),
-            nscount: 0,
-            arcount: 0
         }
 
         const _headerOptions = {
@@ -40,12 +39,10 @@ udpSocket.on("message", (buf, rinfo) => {
             rd: parsedHeaderOptions.rd,
             rcode: parsedHeaderOptions.opcode === 0 ? 0 : 4,
         }
-
-        const dnsHeaderBuffer = createDnsSection({
+        createDnsSection({
             section: 'header',
             ..._headerOptions
         });
-
         const headerBuffer = resolveCall(options);
 
         const encodedDomainBuffers = getEncodedDomainsFromBufferRequest(buf, options.qdcount);
