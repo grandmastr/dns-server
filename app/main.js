@@ -2,7 +2,7 @@ const dgram = require("dgram");
 
 const {DOMAIN_NAME} = require("./constants");
 const {parseDnsHeader, createDnsSection, parseDnsQuestions} = require("./utils/dnsSections")
-const {parseFlags, resolveCall, getEncodedDomainsFromBufferRequest, getQuestionByEncodedDomainBuffers, getAnswerBuffer} = require("./utils/decodeDomainName");
+const {resolveCall, getEncodedDomainsFromBufferRequest, getQuestionByEncodedDomainBuffers, getAnswerBuffer, parseFlags} = require("./utils/domainName/utils");
 
 const udpSocket = dgram.createSocket("udp4");
 udpSocket.bind(2053, "127.0.0.1");

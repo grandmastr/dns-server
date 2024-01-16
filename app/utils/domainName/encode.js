@@ -5,7 +5,7 @@
  * @returns Buffer {Buffer} = encoded URL as a Buffer
  * */
 
-function encodeDomainName(domain) {
+function encode(domain) {
     // split url into labels
     const labels = domain.split('.') // e.g google and com
     const buffer = Buffer.alloc(domain.length + 2); // +2 for thr null byte and extra length byte
@@ -23,4 +23,4 @@ function encodeDomainName(domain) {
     return buffer;
 }
 
-module.exports = encodeDomainName
+module.exports = encode

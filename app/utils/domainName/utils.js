@@ -1,32 +1,9 @@
-const {recordTypes, classFields} = require("../constants");
-const ipToBuffer = require('./ipToBuffer');
-
-/**
- * Basically this does the reverse of what is being done above, it takes a buffer, and extracts the domain name
- * @param buffer {Buffer}
- * @param start {number}
- * @returns {string}
- * */
-function decodeDomainName(buffer, start = 0) {
-    let domain = [];
-    let offset = start;
-
-    while (buffer[offset] !== 0) {
-        const length = buffer[offset++];
-        const labels = buffer.slice(offset, offset + length).toString();
-
-        domain.push(labels);
-        offset += length;
-    }
-
-    return domain.join('.');
-}
+const ipToBuffer = require("../ipToBuffer");
+const {recordTypes, classFields} = require("../../constants");
 
 function getDomainBytes(buffer, offset = 0) {
     let domainBytes = [];
     let currentOffset = offset;
-
-    console.log('biological factors');
 
     while (true) {
         const labelLength = buffer.readUInt8(currentOffset); // read the label length
@@ -59,10 +36,48 @@ function getDomainBytes(buffer, offset = 0) {
     return domainBytes;
 }
 
+function getEncodedDomainsFromBufferRequest(buffer, qdcount = 1) {
+    const domainBufferArray = [];
+    let currentOffset = 12; // Assuming the domain name starts after the header (12 bytes)
+    for (let i = 0; i < qdcount; i++) {
+        const domainBytes = []; // Array to accumulate domain name bytes
+        while (true) {
+            const labelLength = buffer.readUInt8(currentOffset);
+            // check for the pointer reference
+            if ((labelLength & 0xc0) === 0xc0) {
+                const pointerOffset = buffer.readUint16BE(currentOffset) & 0x3fff; // 0x3ff = 0011 1111 1111 1111
+                const pointerBytes = getDomainBytesFromPointer(buffer, pointerOffset);
+                domainBytes.push(...pointerBytes);
+                // Create a buffer from the accumulated domain name bytes array
+                const domainBuffer = Buffer.from(domainBytes);
+                domainBufferArray.push(domainBuffer);
+                break;
+            }
+            // Check for the end of the domain name (null byte)
+            if (labelLength === 0) {
+                domainBytes.push(0); // Push the null terminator
+                currentOffset++;
+                break;
+            }
+            domainBytes.push(labelLength); // Push label length
+            // Push label characters
+            for (let j = 0; j < labelLength; j++) {
+                domainBytes.push(buffer.readUInt8(currentOffset + 1 + j));
+            }
+            // Move to the next label
+            currentOffset += labelLength + 1;
+        }
+        // Create a buffer from the accumulated domain name bytes array
+        const domainBuffer = Buffer.from(domainBytes);
+
+        domainBufferArray.push(domainBuffer);
+    }
+    return domainBufferArray;
+}
+
 function getDomainBytesFromPointer(buffer, offset) {
     const domainBytes = [];
     let currentOffset = offset; // the current offset is the offset of the pointer
-    console.log('getdomainbytespointer', currentOffset);
 
     while (true) {
         const labelLength = buffer.readUInt8(currentOffset); // read the label length
@@ -184,52 +199,11 @@ function parseFlags(flags) {
     };
 }
 
-function getEncodedDomainsFromBufferRequest(buffer, qdcount = 1) {
-    const domainBufferArray = [];
-    let currentOffset = 12; // Assuming the domain name starts after the header (12 bytes)
-    for (let i = 0; i < qdcount; i++) {
-        const domainBytes = []; // Array to accumulate domain name bytes
-        while (true) {
-            const labelLength = buffer.readUInt8(currentOffset);
-            // check for the pointer reference
-            if ((labelLength & 0xc0) === 0xc0) {
-                const pointerOffset = buffer.readUint16BE(currentOffset) & 0x3fff; // 0x3ff = 0011 1111 1111 1111
-                const pointerBytes = getDomainBytesByPointer(buffer, pointerOffset);
-                domainBytes.push(...pointerBytes);
-                // Create a buffer from the accumulated domain name bytes array
-                const domainBuffer = Buffer.from(domainBytes);
-                domainBufferArray.push(domainBuffer);
-                break;
-            }
-            // Check for the end of the domain name (null byte)
-            if (labelLength === 0) {
-                domainBytes.push(0); // Push the null terminator
-                currentOffset++;
-                break;
-            }
-            domainBytes.push(labelLength); // Push label length
-            // Push label characters
-            for (let j = 0; j < labelLength; j++) {
-                domainBytes.push(buffer.readUInt8(currentOffset + 1 + j));
-            }
-            // Move to the next label
-            currentOffset += labelLength + 1;
-        }
-        // Create a buffer from the accumulated domain name bytes array
-        const domainBuffer = Buffer.from(domainBytes);
-
-        domainBufferArray.push(domainBuffer);
-    }
-    return domainBufferArray;
-}
-
 module.exports = {
-    decodeDomainName,
     getDomainBytes,
     parseFlags,
-    getFlags,
     resolveCall,
     getAnswerBuffer,
     getEncodedDomainsFromBufferRequest,
     getQuestionByEncodedDomainBuffers,
-};
+}
