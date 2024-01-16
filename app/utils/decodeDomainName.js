@@ -165,7 +165,7 @@ function getFlags(options) {
 
 function parseFlags(flags) {
     return {
-        qr: (flagss >> 15),
+        qr: (flags >> 15),
         opcode: (flags >> 11) & 0b1111,
         aa: (flags >> 10) & 0b1,
         tc: (flags >> 9) & 0b1,
