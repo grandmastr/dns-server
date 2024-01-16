@@ -8,7 +8,7 @@ function decodeDomainName(buffer, start = 0) {
     let domain = '';
     let offset = start;
 
-    while (buffer[offset] !== 0) {
+    while (buffer[offset] !== 0 && offset < 32) {
         const length = buffer[offset++];
         const labels = buffer.slice(offset, offset + length).toString();
 
