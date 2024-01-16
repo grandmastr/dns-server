@@ -127,7 +127,7 @@ function getAnswerBuffer(encodedDomainBuffers, ip, qdcount = 1) {
 
         encodedDomainBuffer.copy(answerBuffer);
 
-        let offset = encodedDomainBuffer.length + 1;
+        let offset = encodedDomainBuffer.length;
         answerBuffer.writeUInt16BE(recordTypes.A, offset); // write the type into the answer buffer
         offset += 2;
         answerBuffer.writeUInt16BE(classFields.IN, offset); // write the class into the answer buffer
