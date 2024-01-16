@@ -19,7 +19,7 @@ udpSocket.on("message", (buf, rinfo) => {
             id: buf.readUint16BE(0),
             ...parsedFlags,
             qdcount: buf.readUint16BE(4),
-            ancount: buf.readUInt16BE(4),
+            ancount: 2,
             nscount: 0,
             arcount: 0,
             qr: 1,
@@ -35,10 +35,7 @@ udpSocket.on("message", (buf, rinfo) => {
         const encodedDomainBuffers = getEncodedDomainsFromBufferRequest(buf, options.qdcount);
         const questionBuffers = getQuestionByEncodedDomainBuffers(encodedDomainBuffers, encodedDomainBuffers.length);
         const answerBuffers = getAnswerBuffer(encodedDomainBuffers, '203.0.113.1',  questionBuffers.length);
-        console.log(answerBuffers);
-        console.log('--- answer buffers ---');
 
-        // const response = Buffer.concat([dnsHeaderBuffer, dnsQuestionBuffer, dnsAnswerBuffer]);
         const response = Buffer.concat([headerBuffer, ...questionBuffers, ...answerBuffers]);
 
         udpSocket.send(response, rinfo.port, rinfo.address);
