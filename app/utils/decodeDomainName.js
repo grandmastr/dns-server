@@ -101,6 +101,7 @@ function getQuestionByEncodedDomainBuffers(encodedDomainBuffers, qdcount = 1) {
         const encodedDomainBuffer = encodedDomainBuffers[k]; // get the encoded domain buffer
 
         const questionBuffer = Buffer.alloc(encodedDomainBuffer.length + 4); // create a buffer for the question
+        console.log(encodedDomainBuffers, typeof encodedDomainBuffers, 'family');
         encodedDomainBuffers.copy(questionBuffer); // copy the encoded domain buffer into the question buffer
 
         const typeOffset = encodedDomainBuffer.length;
