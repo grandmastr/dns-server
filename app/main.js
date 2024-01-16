@@ -34,7 +34,7 @@ udpSocket.on("message", (buf, rinfo) => {
 
         const encodedDomainBuffers = getEncodedDomainsFromBufferRequest(buf, options.qdcount);
         const questionBuffers = getQuestionByEncodedDomainBuffers(encodedDomainBuffers, encodedDomainBuffers.length);
-        const answerBuffers = getAnswerBuffer(encodedDomainBuffers, questionBuffers.length);
+        const answerBuffers = getAnswerBuffer(encodedDomainBuffers, '203.0.113.1',  questionBuffers.length);
         console.log(answerBuffers);
         console.log('--- answer buffers ---');
 
