@@ -44,6 +44,7 @@ udpSocket.on("message", (buf, rinfo) => {
 
         // Ensure that the length of answerBuffers array matches the ancount
         if (answerBuffers.length !== options.ancount) {
+            console.log(answerBuffers.length, options.ancount)
             throw new Error("Mismatch between ancount and the number of answers prepared. <<<<>>>>");
         }
 
