@@ -27,7 +27,7 @@ function getDomainBytes(buffer, offset = 0) {
     let domainBytes = [];
     let currentOffset = offset;
 
-    console.log('for each label');
+    console.log('biological factors');
 
     while (true) {
         const labelLength = buffer.readUInt8(currentOffset); // read the label length

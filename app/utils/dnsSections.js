@@ -71,7 +71,9 @@ function createDnsAnswer(options) {
     const answerBuffer = Buffer.alloc(domainBuffer.length + 14); // this is as a result of +2 for type,+2 for class, +4 for TTL, +2 for data length, and +4 for the IP address
     domainBuffer.copy(answerBuffer);
 
+    console.log('answerBuffer', answerBuffer);
     let offset = domainBuffer.length;
+    console.log('answerBuffer', answerBuffer, 2);
     answerBuffer.writeUInt16BE(options.type, offset);
     answerBuffer.writeUInt16BE(options.class, offset + 2);
     answerBuffer.writeUInt16BE(options.ttl, offset + 2);
