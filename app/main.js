@@ -1,7 +1,7 @@
 const dgram = require("dgram");
 
 const {DOMAIN_NAME} = require("./constants");
-const {parseDnsHeader, createDnsSection, parseDnsQuestions} = require("./utils/dnsSections")
+const {parseDnsHeader, createDnsSection} = require("./utils/dnsSections")
 const {parseFlags, resolveCall, getEncodedDomainsFromBufferRequest, getQuestionByEncodedDomainBuffers, getAnswerBuffer} = require("./utils/decodeDomainName");
 
 const udpSocket = dgram.createSocket("udp4");
@@ -11,7 +11,6 @@ udpSocket.bind(2053, "127.0.0.1");
 udpSocket.on("message", (buf, rinfo) => {
     try {
         const parsedHeaderOptions = parseDnsHeader(buf);
-        const parsedQuestionOptions = parseDnsQuestions(buf);
 
         const flags = buf.readUInt16BE(2);
         const parsedFlags = parseFlags(flags);
@@ -48,22 +47,22 @@ udpSocket.on("message", (buf, rinfo) => {
             nscount: 0,
             arcount: 0
         }
-        const dnsQuestionBuffer = createDnsSection({
-            section: 'question',
-            domain_name: parsedQuestionOptions.domainName,
-            type: 1,
-            class: 1,
-        });
+        // const dnsQuestionBuffer = createDnsSection({
+        //     section: 'question',
+        //     domain_name: parsedQuestionOptions.domainName,
+        //     type: 1,
+        //     class: 1,
+        // });
 
-        const dnsAnswerBuffer = createDnsSection({
-            section: 'answer',
-            domain_name: parsedQuestionOptions.domainName,
-            type: 1,
-            class: 1,
-            ttl: 60,
-            length: 4,
-            data: "8.8.8.8"
-        });
+        // const dnsAnswerBuffer = createDnsSection({
+        //     section: 'answer',
+        //     domain_name: parsedQuestionOptions.domainName,
+        //     type: 1,
+        //     class: 1,
+        //     ttl: 60,
+        //     length: 4,
+        //     data: "8.8.8.8"
+        // });
 
         const _headerOptions = {
             ...parsedHeaderOptions,
