@@ -1,4 +1,5 @@
 const {recordTypes, classFields} = require("../constants");
+const {ipToBuffer} = require('./ipToBuffer');
 
 /**
  * Basically this does the reverse of what is being done above, it takes a buffer, and extracts the domain name
@@ -118,24 +119,23 @@ function getQuestionByEncodedDomainBuffers(encodedDomainBuffers, qdcount = 1) {
 
 function getAnswerBuffer(encodedDomainBuffers, ip, qdcount = 1) {
     const answerBuffers = [];
+    const ipBuffer = ipToBuffer(ip);
 
     for (let k = 0; k < qdcount; k++) {
         const encodedDomainBuffer = encodedDomainBuffers[k]; // get the encoded domain buffer
-        const answerBuffer = Buffer.alloc(encodedDomainBuffer.length + 14); // create a buffer for the answer
-
-        encodedDomainBuffer.copy(answerBuffer);
+        const answerBuffer = Buffer.alloc(encodedDomainBuffer.length + 16); // create a buffer for the answer
+        encodedDomainBuffer.copy(answerBuffer, 0); // copy the encoded domain buffer into the answer buffer
 
         let offset = encodedDomainBuffer.length;
         answerBuffer.writeUInt16BE(recordTypes.A, offset); // write the type into the answer buffer
         offset += 2;
         answerBuffer.writeUInt16BE(classFields.IN, offset); // write the class into the answer buffer
-        offset += 4;
+        offset += 2;
         answerBuffer.writeUInt32BE(60, offset); // write the ttl into the answer buffer
+        offset += 4;
+        answerBuffer.writeUInt16BE(ipBuffer.length, offset); // write the length into the answer buffer
         offset += 2;
-        answerBuffer.writeUInt16BE(4, offset); // write the length into the answer buffer
-        offset += 2;
-        const rdata = Buffer.from([8, 8, 8, 8]).toString();
-        answerBuffer.writeUInt16BE(rdata, offset); // write the rdata into the answer buffer
+        ipBuffer.copy(answerBuffer, offset); // write the rdata into the answer buffer
         answerBuffers.push(answerBuffer);
     }
 
