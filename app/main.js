@@ -1,7 +1,7 @@
 const dgram = require("dgram");
 
 const {DOMAIN_NAME} = require("./constants");
-const {parseDnsHeader, createDnsSection} = require("./utils/dnsSections")
+const {parseDnsHeader, createDnsSection, parseDnsQuestions} = require("./utils/dnsSections")
 
 const udpSocket = dgram.createSocket("udp4");
 udpSocket.bind(2053, "127.0.0.1");
@@ -10,6 +10,7 @@ udpSocket.bind(2053, "127.0.0.1");
 udpSocket.on("message", (buf, rinfo) => {
     try {
         const parsedHeaderOptions = parseDnsHeader(buf);
+        const parsedQuestionOptions = parseDnsQuestions(buf);
 
         const defaultHeaderParams = {
             id: 1,
@@ -28,14 +29,14 @@ udpSocket.on("message", (buf, rinfo) => {
         }
         const dnsQuestionBuffer = createDnsSection({
             section: 'question',
-            domain_name: DOMAIN_NAME,
+            domain_name: parsedQuestionOptions.domainName,
             type: 1,
             class: 1,
         });
 
         const dnsAnswerBuffer = createDnsSection({
             section: 'answer',
-            domain_name: DOMAIN_NAME,
+            domain_name: parsedQuestionOptions.domainName,
             type: 1,
             class: 1,
             ttl: 60,

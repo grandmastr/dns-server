@@ -1,5 +1,6 @@
 const SIZES = require('../constants');
 const encodeDomainName = require('./encodeDomainName');
+const decodeDomainName = require('./decodeDomainName');
 
 /**
  * This file contains the functions that are used to create the DNS sections,
@@ -118,6 +119,16 @@ function parseDnsHeader(buffer) {
     }
 }
 
+function parseDnsQuestions(buffer) {
+    const offset = 12;
+    const domainName = decodeDomainName(buffer, offset);
+    const type = buffer.readUInt16BE(offset + domainName.length + 2);
+    const _class = buffer.readUInt16BE(offset + domainName.length + 4);
+
+    return {
+        domainName, type, class: _class
+    }
+}
 
 class DnsSections {
     constructor(buffer) {
@@ -170,4 +181,5 @@ class DnsSections {
 module.exports = {
     createDnsSection,
     parseDnsHeader,
+    parseDnsQuestions
 };
