@@ -1,10 +1,10 @@
-# A Node.js DNS
+# A Node.js DNS service
 
 ## Introduction
 
-This is a simple DNS written in Node.js. It is intended to be used as a local DNS for your network. It is
-not a full DNS, but it is capable of resolving a few basic DNS queries (A, AAAA, CNAME, PTR, TXT, and MX). It is
-also capable of forwarding queries to another DNS (such as your ISP's DNS). It is not intended to be used
+This is a simple DNS service written in Node.js. It is intended to be used as a local DNS for your network. It is
+not a full DNS service, but it is capable of resolving a few basic DNS queries (A, AAAA, CNAME, PTR, TXT, and MX). It is
+also capable of forwarding queries to another DNS service (such as your ISP's DNS). It is not intended to be used
 as a public DNS.
 
 ### Installation
