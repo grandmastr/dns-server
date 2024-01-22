@@ -1,19 +1,19 @@
-# A Node.js DNS service
+# A Node.js DNS <ListItem />
 
 ## Introduction
 
-This is a simple DNS service written in Node.js. It is intended to be used as a local DNS for your network. It is
-not a full DNS service, but it is capable of resolving a few basic DNS queries (A, AAAA, CNAME, PTR, TXT, and MX). It is
+This is a simple DNS server written in Node.js. It is intended to be used as a local DNS for your network. It is
+not a full DNS server, but it is capable of resolving a few basic DNS queries (A, AAAA, CNAME, PTR, TXT, and MX). It is
 also capable of forwarding queries to another DNS service (such as your ISP's DNS). It is not intended to be used
 as a public DNS.
 
 ### Installation
 
-To install the DNS, you must first install Node.js. You can download Node.js
+To install the DNS server, you must first install Node.js. You can download Node.js
 from [nodejs.org](https://nodejs.org/).
 Once Node.js is installed, clone the repo.
 
-### Functionality overview
+### Functionality Overview
 
 The DNS is capable of resolving a few basic DNS queries (A, AAAA, CNAME, PTR, TXT, and MX). It is also capable of
 forwarding queries to another DNS (such as your ISP's DNS). It is not intended to be used as a public DNS
@@ -36,7 +36,7 @@ This server currently handles DNS headers and questions, with a focus on:
 ### Limitations
 
 - Compressed Packet Handling:
-    - The DNS does not currently handle compressed packets.
+    - The DNS server does not currently handle compressed packets.
 - Answering capabilities:
     - It is not a full DNS, but it is capable of resolving a few basic DNS queries (A, AAAA, CNAME, PTR, TXT, and
       MX).
@@ -44,7 +44,7 @@ This server currently handles DNS headers and questions, with a focus on:
     - it only handles the answer section of the response, and does not handle the authority or additional sections.
 
 ### Testing
-To test the DNS, you can use the `dig` or `nslookup` command
+To test the DNS server, you can use the `dig` or `nslookup` command
 
 ### Additional Information
 Refer to [this](https://www.rfc-editor.org/rfc/rfc1035#section-4.1.4) document detailing the specifications and implementation of Domain names and DNS:
