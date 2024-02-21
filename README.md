@@ -1,4 +1,4 @@
-# A Node.js DNS <ListItem />
+# A Node.js DNS server
 
 ## Introduction
 
